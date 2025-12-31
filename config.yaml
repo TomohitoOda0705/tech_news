@@ -1,37 +1,131 @@
 keywords:
-  - "Foodtech"
-  - "Google Cloud Platform"
-  - "Gemini"
+  # --- AI / ML ---
+  - "AI"
+  - "Artificial Intelligence"
+  - "Generative AI"
   - "LLM"
+  - "Gemini"
+  - "OpenAI"
+
+  # --- Robotics ---
   - "Robotics"
+  - "Robot"
+  - "ロボット"
+
+  # --- FoodTech ---
+  - "Foodtech"
+  - "Food Tech"
+  - "フードテック"
+  - "AgriTech"
+
+  # --- Smart City / Urban Dev ---
+  - "Smart City"
+  - "Urban Development"
+  - "スマートシティ"
+  - "都市開発"
+  - "PropTech"
+
+  # --- Cloud / Dev ---
+  - "Google Cloud Platform"
+
+  # --- Events ---
+  # - "Event"
+  # - "Conference"
+  # - "Meetup"
+  # - "Hackathon"
+  # - "Webinar"
+  # - "イベント"
+  # - "カンファレンス"
+  # - "ハッカソン"
+  # - "ウェビナー"
+
+  # --- Security ---
+  - "Security"
+  - "Cyber Security"
+  - "Vulnerability"
+  - "Malware"
+  - "Ransomware"
+  - "Zero Trust"
+  - "セキュリティ"
+  - "サイバーセキュリティ"
+  - "脆弱性"
+  - "マルウェア"
+  - "ランサムウェア"
+  - "ゼロトラスト"
 
 # 過去何日分の記事を対象にするか（0なら制限なし）
-days_limit: 3
+days_limit: 1
 
 sources:
+  # --- Engineering ---
   - name: "Qiita Trend"
     type: "rss"
+    category: "Engineering"
     url: "https://qiita.com/popular-items/feed"
   
   - name: "Zenn Trend"
     type: "rss"
+    category: "Engineering"
     url: "https://zenn.dev/feed"
 
+  - name: "Publickey"
+    type: "rss"
+    category: "Engineering"
+    url: "https://www.publickey1.jp/atom.xml"
+
+  - name: "DevelopersIO"
+    type: "rss"
+    category: "Engineering"
+    url: "https://dev.classmethod.jp/feed/"
+
+  # --- Business / Startups ---
+  - name: "The Bridge"
+    type: "rss"
+    category: "Business"
+    url: "https://thebridge.jp/feed"
+
+  - name: "ITmedia ビジネスオンライン"
+    type: "rss"
+    category: "Business"
+    url: "https://rss.itmedia.co.jp/rss/2.0/business.xml"
+
+  - name: "TechCrunch Japan"
+    type: "rss"
+    category: "Business"
+    url: "https://jp.techcrunch.com/feed/"
+
+  # --- Science & Technology ---
   - name: "Google News (Technology)"
     type: "rss"
+    category: "Science & Tech"
     url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWvfQ0wyZ0tSMjF0WVMxemVHVXRiSE55S2d8UQA?hl=ja&gl=JP&ceid=JP:ja"
 
   - name: "MIT Technology Review"
     type: "rss"
+    category: "Science & Tech"
     url: "https://www.technologyreview.com/feed/"
 
+  # --- FoodTech ---
   - name: "The Spoon (FoodTech)"
     type: "rss"
+    category: "FoodTech"
     url: "https://thespoon.tech/feed/"
 
   - name: "TechCrunch (Food)"
     type: "rss"
+    category: "FoodTech"
     url: "https://techcrunch.com/category/food/feed/"
+
+  # --- Events ---
+  - name: "TechPlay"
+    type: "rss"
+    category: "Events"
+    url: "https://techplay.jp/rss/new"
+
+  - name: "Connpass"
+    type: "rss"
+    category: "Events"
+    url: "https://connpass.com/explore/ja.atom"
 
 # 将来的な拡張例
 #  - name: "Hacker News"

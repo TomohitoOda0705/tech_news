@@ -63,16 +63,42 @@ class EmailNotifier:
         return "\n".join(lines)
 
     def _generate_html_body(self, articles):
-        """HTML形式のメール本文"""
-        html = "<h2>Daily Tech News Summary</h2><ul>"
+        """HTML形式のメール本文（カテゴリー分け対応）"""
+        # カテゴリーごとにグループ化
+        grouped_articles = {}
         for article in articles:
-            html += f"<li>"
-            html += f"<strong><a href='{article['url']}'>{article['title']}</a></strong>"
-            html += f"<br/><small>Source: {article['source']} | Keyword: {article.get('matched_keyword', 'N/A')}</small>"
-            if article.get('summary'):
-                # 改行を<br>に変換して表示（文字数制限なし）
-                summary_html = article['summary'].replace('\n', '<br/>')
-                html += f"<p>{summary_html}</p>"
-            html += "</li>"
-        html += "</ul>"
+            cat = article.get('category', 'Uncategorized')
+            if cat not in grouped_articles:
+                grouped_articles[cat] = []
+            grouped_articles[cat].append(article)
+
+        html = "<h2>Daily Tech News Summary</h2>"
+        
+        # カテゴリー順に表示（固定順序またはアルファベット順）
+        # ここでは固定順序を定義してみる
+        category_order = ["Engineering", "Business", "Science & Tech", "FoodTech", "Uncategorized"]
+        
+        # 存在するカテゴリーだけを抽出してソート
+        sorted_categories = [c for c in category_order if c in grouped_articles]
+        # 定義にないカテゴリーがあれば末尾に追加
+        for cat in grouped_articles.keys():
+            if cat not in sorted_categories:
+                sorted_categories.append(cat)
+
+        for category in sorted_categories:
+            articles_in_cat = grouped_articles[category]
+            html += f"<h3 style='background-color: #f0f0f0; padding: 5px;'>{category} ({len(articles_in_cat)})</h3><ul>"
+            
+            for article in articles_in_cat:
+                html += f"<li style='margin-bottom: 15px;'>"
+                html += f"<strong><a href='{article['url']}'>{article['title']}</a></strong>"
+                html += f"<br/><small style='color: #666;'>Source: {article['source']} | Keyword: {article.get('matched_keyword', 'N/A')}</small>"
+                
+                if article.get('summary'):
+                    # 改行を<br>に変換して表示（文字数制限なし）
+                    summary_html = article['summary'].replace('\n', '<br/>')
+                    html += f"<p style='margin-top: 5px;'>{summary_html}</p>"
+                html += "</li>"
+            html += "</ul>"
+            
         return html

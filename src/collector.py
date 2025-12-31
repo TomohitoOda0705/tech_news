@@ -33,11 +33,12 @@ class NewsCollector:
             source_name = source.get('name')
             source_url = source.get('url')
             source_type = source.get('type')
+            source_category = source.get('category', 'Uncategorized')
 
-            print(f"Fetching from: {source_name}...")
+            print(f"Fetching from: {source_name} ({source_category})...")
 
             if source_type == 'rss':
-                articles = self._fetch_rss(source_url, source_name)
+                articles = self._fetch_rss(source_url, source_name, source_category)
                 all_articles.extend(articles)
             else:
                 print(f"Unknown source type: {source_type}")
@@ -46,7 +47,7 @@ class NewsCollector:
         filtered_articles = self._filter_by_keywords(all_articles)
         return filtered_articles
 
-    def _fetch_rss(self, url, source_name):
+    def _fetch_rss(self, url, source_name, source_category):
         """RSSフィードから記事を取得"""
         feed = feedparser.parse(url)
         articles = []
@@ -80,6 +81,7 @@ class NewsCollector:
                 'summary': entry.get('summary', '') or entry.get('description', ''),
                 'published': published_str,
                 'source': source_name,
+                'category': source_category,
                 'collected_at': datetime.now().isoformat()
             }
             articles.append(article)

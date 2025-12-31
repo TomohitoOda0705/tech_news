@@ -41,7 +41,7 @@ Summary: {original_summary}
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.2,
-                    max_output_tokens=256,
+                    max_output_tokens=1024,
                 )
             )
             return response.text.strip()
