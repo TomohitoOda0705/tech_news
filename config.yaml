@@ -1,0 +1,44 @@
+keywords:
+  - "Foodtech"
+  - "Google Cloud Platform"
+  - "Gemini"
+  - "LLM"
+  - "Robotics"
+
+# 過去何日分の記事を対象にするか（0なら制限なし）
+days_limit: 3
+
+sources:
+  - name: "Qiita Trend"
+    type: "rss"
+    url: "https://qiita.com/popular-items/feed"
+  
+  - name: "Zenn Trend"
+    type: "rss"
+    url: "https://zenn.dev/feed"
+
+  - name: "Google News (Technology)"
+    type: "rss"
+    url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWvfQ0wyZ0tSMjF0WVMxemVHVXRiSE55S2d8UQA?hl=ja&gl=JP&ceid=JP:ja"
+
+  - name: "MIT Technology Review"
+    type: "rss"
+    url: "https://www.technologyreview.com/feed/"
+
+  - name: "The Spoon (FoodTech)"
+    type: "rss"
+    url: "https://thespoon.tech/feed/"
+
+  - name: "TechCrunch (Food)"
+    type: "rss"
+    url: "https://techcrunch.com/category/food/feed/"
+
+# 将来的な拡張例
+#  - name: "Hacker News"
+#    type: "api"
+#    url: "https://hacker-news.firebaseio.com/v0/topstories.json"
+
+email:
+  from_email: "t.oda.0705@gmail.com"
+  to_email: "so.oda.0705@gmail.com" # テスト用に書き換えてください
+  subject_prefix: "[Tech News]"
