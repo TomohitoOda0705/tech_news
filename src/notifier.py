@@ -28,7 +28,13 @@ class EmailNotifier:
         msg = MIMEMultipart("alternative")
         msg['Subject'] = f"{self.config['email']['subject_prefix']} Daily Summary - {len(articles)} articles"
         msg['From'] = self.gmail_user
-        msg['To'] = self.config['email']['to_email']
+        
+        # 宛先がリストならカンマ区切りにする、文字列ならそのまま
+        to_emails = self.config['email']['to_email']
+        if isinstance(to_emails, list):
+            msg['To'] = ", ".join(to_emails)
+        else:
+            msg['To'] = to_emails
 
         # 本文の作成（テキスト版とHTML版）
         text_body = self._generate_email_body(articles)

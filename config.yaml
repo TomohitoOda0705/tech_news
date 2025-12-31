@@ -40,5 +40,8 @@ sources:
 
 email:
   from_email: "t.oda.0705@gmail.com"
-  to_email: "so.oda.0705@gmail.com" # テスト用に書き換えてください
+  to_email: 
+    - "so.oda.0705@gmail.com" # テスト用に書き換えてください
+    - "Tomohito.Oda@sony.com"
+    # - "another@example.com"
   subject_prefix: "[Tech News]"
