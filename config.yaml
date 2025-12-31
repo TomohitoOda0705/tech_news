@@ -89,6 +89,23 @@ sources:
     category: "Business"
     url: "https://rss.itmedia.co.jp/rss/2.0/business.xml"
 
+  - name: "Nikkei Business"
+    type: "rss"
+    category: "Business"
+    url: "https://business.nikkei.com/rss/sns/nb.rdf"
+
+  - name: "Nikkei XTREND"
+    type: "rss"
+    category: "Business"
+    url: "https://xtrend.nikkei.com/rss/index.rdf"
+
+  - name: "Gartner Newsroom"
+    type: "rss"
+    category: "Business"
+    url: "https://www.gartner.com/en/newsroom/rss"
+
+  # 月刊事業構想 (Project Design) はRSSフィードがないため未追加
+
   - name: "TechCrunch Japan"
     type: "rss"
     category: "Business"
