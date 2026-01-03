@@ -53,6 +53,21 @@ keywords:
   - "ランサムウェア"
   - "ゼロトラスト"
 
+  # --- Sensors ---
+  - "Depth"
+  - "深度"
+  - "Temperature"
+  - "温度"
+  - "Taste"
+  - "味覚"
+  - "Olfactory"
+  - "嗅覚"
+  - "Smell"
+  - "Odor"
+  - "匂い"
+  - "SWIR"
+  - "近赤外"
+
 # 過去何日分の記事を対象にするか（0なら制限なし）
 days_limit: 1
 
