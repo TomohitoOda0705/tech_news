@@ -12,6 +12,7 @@ class GrantCollector:
         self.keywords = self.config.get('keywords', [])
         self.sources = self.config.get('sources', [])
         self.days_limit = self.config.get('days_limit', 7)
+        self.timeout = self.config.get('timeout', 30)  # RSS fetch timeout in seconds
 
     def _load_config(self, path):
         """YAML設定ファイルを読み込む"""
@@ -53,8 +54,8 @@ class GrantCollector:
         articles = []
         
         try:
-            # タイムアウトを設定してRSSフィードを取得
-            response = requests.get(url, timeout=30)
+            # Fetch RSS feed with timeout
+            response = requests.get(url, timeout=self.timeout)
             response.raise_for_status()
             feed = feedparser.parse(response.content)
             
@@ -65,7 +66,7 @@ class GrantCollector:
                 if not feed.entries:
                     return []
         except requests.exceptions.Timeout:
-            print(f"Error: Timeout fetching RSS from {url} (exceeded 30 seconds)")
+            print(f"Error: Timeout fetching RSS from {url} (exceeded {self.timeout} seconds)")
             return []
         except requests.exceptions.RequestException as e:
             print(f"Error fetching RSS from {url}: {e}")
