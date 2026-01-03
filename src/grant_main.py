@@ -23,6 +23,8 @@ def main():
         summarizer = NewsSummarizer()
         for i, article in enumerate(articles, 1):
             print(f"[{i}/{len(articles)}] Summarizing: {article['title']}...")
+            # 元の要約を保持
+            article['original_summary'] = article['summary']
             # 助成金情報用のプロンプトを使用
             ai_summary = summarizer.summarize_grant(article['title'], article['summary'])
             article['summary'] = ai_summary # 要約を上書き

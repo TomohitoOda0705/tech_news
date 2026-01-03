@@ -49,13 +49,20 @@ class GrantCollector:
 
     def _fetch_rss(self, url, source_name, source_category):
         """RSSフィードから記事を取得"""
+        articles = []
+        
         try:
             feed = feedparser.parse(url)
+            
+            # フィード取得エラーのチェック
+            if feed.get('bozo', False):
+                print(f"Warning: RSS parsing issue for {url}: {feed.get('bozo_exception', 'Unknown error')}")
+                # ボゾフラグがあっても、エントリーがあれば処理を続行
+                if not feed.entries:
+                    return []
         except Exception as e:
             print(f"Error fetching RSS from {url}: {e}")
             return []
-        
-        articles = []
         
         # 基準日時を計算（現在時刻 - days_limit）
         now = datetime.now(pytz.utc)
@@ -72,7 +79,8 @@ class GrantCollector:
                     # タイムゾーンがない場合はUTC扱いにする
                     if published_dt.tzinfo is None:
                         published_dt = published_dt.replace(tzinfo=pytz.utc)
-                except Exception:
+                except (ValueError, parser.ParserError) as e:
+                    print(f"Warning: Failed to parse date '{published_str}' for {source_name}: {e}")
                     pass # パース失敗時は日付チェックをスキップ（または除外）
 
             # 日付フィルタリング
