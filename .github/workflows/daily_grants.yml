@@ -1,4 +1,4 @@
-name: Daily Tech News Collector
+name: Daily Grant Information Collector
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # 手動実行用
 
 jobs:
-  run-collector:
+  run-grant-collector:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,11 +26,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run collector
+    - name: Run grant collector
       env:
         GMAIL_USER: ${{ secrets.GMAIL_USER }}
         GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
-        python src/main.py
+        python src/grant_main.py
