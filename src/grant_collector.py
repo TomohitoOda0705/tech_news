@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import os
 import pytz
+import requests
 
 class GrantCollector:
     def __init__(self, config_path='grant_config.yaml'):
@@ -11,6 +12,7 @@ class GrantCollector:
         self.keywords = self.config.get('keywords', [])
         self.sources = self.config.get('sources', [])
         self.days_limit = self.config.get('days_limit', 7)
+        self.timeout = self.config.get('timeout', 30)  # RSS fetch timeout in seconds
 
     def _load_config(self, path):
         """YAML設定ファイルを読み込む"""
@@ -52,7 +54,10 @@ class GrantCollector:
         articles = []
         
         try:
-            feed = feedparser.parse(url)
+            # Fetch RSS feed with timeout
+            response = requests.get(url, timeout=self.timeout)
+            response.raise_for_status()
+            feed = feedparser.parse(response.content)
             
             # フィード取得エラーのチェック
             if feed.get('bozo', False):
@@ -60,8 +65,14 @@ class GrantCollector:
                 # ボゾフラグがあっても、エントリーがあれば処理を続行
                 if not feed.entries:
                     return []
-        except Exception as e:
+        except requests.exceptions.Timeout:
+            print(f"Error: Timeout fetching RSS from {url} (exceeded {self.timeout} seconds)")
+            return []
+        except requests.exceptions.RequestException as e:
             print(f"Error fetching RSS from {url}: {e}")
+            return []
+        except Exception as e:
+            print(f"Error parsing RSS from {url}: {e}")
             return []
         
         # 基準日時を計算（現在時刻 - days_limit）
