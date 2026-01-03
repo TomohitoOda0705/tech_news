@@ -1,11 +1,22 @@
 # Tech News Collector
 
 GCPを活用して、毎日技術ニュースを収集・蓄積し、メールで通知するシステム。
+さらに、助成金・補助金情報も別途収集・配信します。
 
 ## 概要 (Draft)
 
 ### 1. 目的
-毎日決まった時間に技術ニュースを自動で収集し、データベースに蓄積するとともに、要約などをメールで受け取る。
+毎日決まった時間に技術ニュースと助成金情報を自動で収集し、データベースに蓄積するとともに、要約などをメールで受け取る。
+
+#### 2つの配信システム
+1. **技術ニュース配信** (`src/main.py`)
+   - 技術記事、ビジネス、FoodTechなどの最新ニュースを収集
+   - 毎日8:00 AM（日本時間）に配信
+
+2. **助成金情報配信** (`src/grant_main.py`) ✨ NEW
+   - 中小企業、スタートアップ、フードテック、食産業、食文化、地域創生に関連する助成金・補助金情報を収集
+   - 毎日8:00 AM（日本時間）に配信
+   - 過去7日分の新着情報をキーワードフィルタリング
 
 ### 2. アーキテクチャ詳細
 
@@ -65,11 +76,38 @@ graph TD
     *   **代替案**: Gmail SMTP (設定は楽だが、セキュリティ制限に引っかかることがある)。
 
 ### 3. 処理フロー
+
+#### 技術ニュース収集フロー
 1. Cloud Scheduler が Cloud Functions をトリガー
 2. 指定されたソースからニュースを取得
 3. (オプション) LLM (Geminiなど) で要約・フィルタリング
 4. データベースに保存 (重複チェック含む)
 5. メール本文を作成し送信
+
+#### 助成金情報収集フロー ✨ NEW
+1. GitHub Actions が毎日8:00 AMに実行
+2. 政府機関・自治体のRSSフィードから助成金情報を収集
+3. キーワードでフィルタリング（中小企業、スタートアップ、フードテック等）
+4. Gemini AIで事業者向けに要約（対象者、支援内容、期限等を明確化）
+5. HTMLメールで配信
+
+### 4. 助成金情報ソース
+
+助成金情報は以下の公式ソースから収集します：
+
+#### 中小企業・スタートアップ支援
+- **中小企業庁**: 公式RSS (https://www.chusho.meti.go.jp/rss/web.xml)
+- **J-Net21 (中小機構)**: 補助金活用ナビ RSS (https://j-net21.smrj.go.jp/rss/index.rdf)
+
+#### フードテック・食産業支援
+- **農林水産省**: 新着情報 RSS (https://www.maff.go.jp/j/rss/index.rdf)
+- **経済産業省 関東経済産業局**: フードテック関連 (https://www.kanto.meti.go.jp/rss/index.rdf)
+
+#### 地域創生支援
+- **総務省 地域力創造**: RSS (https://www.soumu.go.jp/main_sosiki/jichi_gyousei/c-gyousei/rss/index.xml)
+- **内閣府 地方創生推進事務局**: RSS (https://www.chisou.go.jp/tiiki/index.rdf)
+
+設定は `grant_config.yaml` で管理されています。
 
 ## 検討事項
 - ニュースソースはどこにするか？
@@ -89,3 +127,57 @@ GCPの無料枠 (Free Tier) をうまく使えば、**ほぼ0円** で運用可�
 | **SendGrid** | 毎日1通送信 | 1日100通まで無料 | **¥0** |
 
 ※ 注意: 完全に無料を保証するものではなく、設定ミスや大量アクセスで課金される可能性はあります。予算アラートの設定を推奨します。
+
+## 使い方
+
+### 前提条件
+- Python 3.11+
+- Google API Key または Google Cloud Project (Gemini AI用)
+- Gmail アカウント (メール送信用)
+
+### セットアップ
+
+1. **依存関係のインストール**
+```bash
+pip install -r requirements.txt
+```
+
+2. **環境変数の設定**
+`.env` ファイルを作成し、以下を設定：
+```
+GMAIL_USER=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-app-password
+GOOGLE_API_KEY=your-google-api-key
+# または
+GOOGLE_CLOUD_PROJECT=your-project-id
+```
+
+3. **設定ファイルの編集**
+- `config.yaml`: 技術ニュースの配信先やキーワード
+- `grant_config.yaml`: 助成金情報の配信先やキーワード
+
+### ローカルでの実行
+
+**技術ニュース収集**
+```bash
+python src/main.py
+```
+
+**助成金情報収集**
+```bash
+python src/grant_main.py
+```
+
+### GitHub Actionsでの自動実行
+
+リポジトリのSecretsに以下を設定：
+- `GMAIL_USER`
+- `GMAIL_APP_PASSWORD`
+- `GOOGLE_API_KEY`
+- `GOOGLE_CLOUD_PROJECT` (オプション)
+
+ワークフローは毎日8:00 AM（日本時間）に自動実行されます：
+- `.github/workflows/daily_news.yml`: 技術ニュース
+- `.github/workflows/daily_grants.yml`: 助成金情報
+
+手動実行も可能です（ActionsタブからWorkflow Dispatchを選択）。
