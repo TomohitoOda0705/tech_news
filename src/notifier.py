@@ -72,7 +72,7 @@ class EmailNotifier:
                 grouped_articles[cat] = []
             grouped_articles[cat].append(article)
 
-        html = "<h2>Daily Tech News Summary</h2>"
+        html = "<h2>Daily Summary</h2>"
         
         # カテゴリー順に表示（固定順序またはアルファベット順）
         # ここでは固定順序を定義してみる
