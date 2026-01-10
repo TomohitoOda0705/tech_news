@@ -19,6 +19,7 @@ def main():
     print(f"\n収集完了: {len(articles)} 件の記事が見つかりました。")
 
     # AI要約の実行
+    overall_summary = None
     if articles:
         print("\nAI要約を開始します...")
         summarizer = NewsSummarizer()
@@ -26,6 +27,9 @@ def main():
             print(f"[{i}/{len(articles)}] Summarizing: {article['title']}...")
             ai_summary = summarizer.summarize(article['title'], article['summary'])
             article['summary'] = ai_summary # 要約を上書き
+        
+        print("\n全体サマリー(食産業応用視点)を生成中...")
+        overall_summary = summarizer.generate_overall_summary(articles)
 
     # 結果を表示（デバッグ用）
     for i, article in enumerate(articles, 1):
@@ -37,7 +41,7 @@ def main():
     # メール送信
     print("\nメール送信処理を開始します...")
     notifier = EmailNotifier(collector.config)
-    notifier.send_daily_summary(articles)
+    notifier.send_daily_summary(articles, overall_summary)
 
 if __name__ == "__main__":
     main()

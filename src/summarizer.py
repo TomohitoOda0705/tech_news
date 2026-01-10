@@ -95,3 +95,43 @@ Summary: {original_summary}
         except Exception as e:
             print(f"Error generating grant summary for '{title}': {e}")
             return original_summary
+
+    def generate_overall_summary(self, articles):
+        """全記事の情報を元に、食産業・フードテックへの応用視点で全体サマリーを生成"""
+        if not self.client or not articles:
+            return None
+
+        # 記事情報をテキストにまとめる
+        articles_text = ""
+        for article in articles:
+            articles_text += f"- Title: {article['title']}\n"
+            articles_text += f"  Summary: {article.get('summary', 'No summary provided')}\n\n"
+
+        prompt = f"""
+以下は本日収集された複数のテックニュース記事のタイトルと要約です。
+これらすべての情報を踏まえて、**食産業やフードテック（食品関連技術、外食、農業など）に応用できそうな視点**で、全体を俯瞰した要約を作成してください。
+
+条件:
+- 文字数は日本語で400文字程度。
+- 単なる記事の羅列ではなく、どのようなトレンドがあり、それがどう食産業に活かせるか、あるいは影響を与えるかを考察してください。
+- 直接的に食品に関連しない技術（AI、ロボティクスなど）であっても、食品業界への応用可能性を見出して記述してください。
+
+Input Articles:
+{articles_text}
+
+Output:
+"""
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.3,
+                    max_output_tokens=1024,
+                )
+            )
+            return response.text.strip()
+        except Exception as e:
+            print(f"Error generating overall summary: {e}")
+            return None

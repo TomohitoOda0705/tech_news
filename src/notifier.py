@@ -13,7 +13,7 @@ class EmailNotifier:
         if not self.gmail_user or not self.gmail_password:
             print("Warning: GMAIL_USER or GMAIL_APP_PASSWORD environment variable is not set.")
 
-    def send_daily_summary(self, articles):
+    def send_daily_summary(self, articles, overall_summary=None):
         """収集した記事リストをメールで送信する"""
         if not articles:
             print("No articles to send.")
@@ -21,7 +21,7 @@ class EmailNotifier:
 
         if not self.gmail_user or not self.gmail_password:
             print("Skipping email send (No Credentials). Printing content instead.")
-            print(self._generate_email_body(articles))
+            print(self._generate_email_body(articles, overall_summary))
             return
 
         # メールの作成
@@ -37,8 +37,8 @@ class EmailNotifier:
             msg['To'] = to_emails
 
         # 本文の作成（テキスト版とHTML版）
-        text_body = self._generate_email_body(articles)
-        html_body = self._generate_html_body(articles)
+        text_body = self._generate_email_body(articles, overall_summary)
+        html_body = self._generate_html_body(articles, overall_summary)
 
         msg.attach(MIMEText(text_body, 'plain'))
         msg.attach(MIMEText(html_body, 'html'))
@@ -53,16 +53,22 @@ class EmailNotifier:
         except Exception as e:
             print(f"Error sending email: {e}")
 
-    def _generate_email_body(self, articles):
+    def _generate_email_body(self, articles, overall_summary=None):
         """テキスト形式のメール本文（デバッグ用）"""
         lines = ["Here is your daily tech news summary:\n"]
+        
+        if overall_summary:
+            lines.append("=== FoodTech Perspective Summary ===")
+            lines.append(overall_summary)
+            lines.append("====================================\n")
+
         for article in articles:
             lines.append(f"- {article['title']}")
             lines.append(f"  {article['url']}")
             lines.append("")
         return "\n".join(lines)
 
-    def _generate_html_body(self, articles):
+    def _generate_html_body(self, articles, overall_summary=None):
         """HTML形式のメール本文（カテゴリー分け対応）"""
         # カテゴリーごとにグループ化
         grouped_articles = {}
@@ -73,6 +79,14 @@ class EmailNotifier:
             grouped_articles[cat].append(article)
 
         html = "<h2>Daily Summary</h2>"
+        
+        if overall_summary:
+            html += f"""
+            <div style="background-color: #e8daef; padding: 15px; margin-bottom: 20px; border-left: 5px solid #8e44ad; border-radius: 4px;">
+                <h3 style="margin-top: 0; color: #8e44ad;">Today's FoodTech Perspective</h3>
+                <p style="white-space: pre-wrap;">{overall_summary}</p>
+            </div>
+            """
         
         # カテゴリー順に表示（固定順序またはアルファベット順）
         # ここでは固定順序を定義してみる
